@@ -30,6 +30,7 @@ public class DVD extends Item {
     
     public void setDirector(String director){
         // sets director
+        if (!director.equals(""))
         this.director=director;
     }
     
@@ -40,6 +41,8 @@ public class DVD extends Item {
     
     public void setAudioLanguages(String[] languages){
         // sets array of audio languages
+        String[] empty = new String[languages.length];
+        if ((!Arrays.equals(languages,empty)))
         audioLanguages=languages;
     }
     
