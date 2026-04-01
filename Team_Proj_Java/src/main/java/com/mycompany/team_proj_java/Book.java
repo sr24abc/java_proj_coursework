@@ -29,6 +29,7 @@ public class Book extends Item {
     
     public void setAuthor(String author){
         // sets author
+        if (!author.equals(""))
         this.author=author;
     }
     
@@ -39,6 +40,7 @@ public class Book extends Item {
     
     public void setIsbn(String isbn){
         // sets ISBN
+        if (!isbn.equals(""))
         this.isbn=isbn;
     }
     
