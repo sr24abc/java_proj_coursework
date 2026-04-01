@@ -30,6 +30,7 @@ public abstract class Item {
     
     public void setTitle(String title){
         // sets title
+        if (!title.equals(""))
         this.title=title;
     }
     
@@ -40,6 +41,7 @@ public abstract class Item {
     
     public void setLanguage(String language){
         // sets language
+        if (!language.equals(""))
         this.language=language;
     }
     
@@ -50,7 +52,9 @@ public abstract class Item {
     
     public Member getBorrower(){
         // returns who has loaned the item
-        return onLoanTo;
+        if (onLoanTo != null)
+            return onLoanTo;
+        return null;
     }
     
     public boolean isAvailable(){
@@ -65,11 +69,14 @@ public abstract class Item {
     
     public Member getDonator(){
         // returns donator
-        return donatedBy;
+        if (donatedBy != null)
+            return donatedBy;
+        return null; 
     }
     
     public void clearDonator(){
         // clears donator
-        donatedBy=null;
+        if (donatedBy != null)
+            donatedBy=null;
     }
 }
