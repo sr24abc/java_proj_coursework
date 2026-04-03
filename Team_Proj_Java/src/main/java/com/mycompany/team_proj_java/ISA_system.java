@@ -4,8 +4,12 @@
  */
 package com.mycompany.team_proj_java;
 
+
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import java.io.*;
+import java.util.List;
 
 /**
  *
@@ -16,6 +20,67 @@ public class ISA_system {
                                                                   //this will later have a method to fill it up
     static Scanner input = new Scanner(System.in); // global input scanner declared
     
+    
+    public static ArrayList<Member> Member = new ArrayList<>();
+    
+    //Member methods
+    //Add a new member
+    public static void addMember() {
+        System.out.println("Enter name:");
+        String name = input.nextLine();
+
+        System.out.println("Enter address:");
+        String address = input.nextLine();
+
+        System.out.println("Enter email:");
+        String email = input.nextLine();
+
+        Member member = new Member(name, address, email, 0);
+        Member.add(member);
+
+        System.out.println("Member added successfully!");
+    }
+
+    //Displays members
+    public static void printMembers(ArrayList<Member> members) {
+        for (int i = 0; i < members.size(); i++) {
+            System.out.println((i + 1) + ") " + members.get(i).getName());
+        }
+    }
+
+    
+    //Choose a member - from all members
+    public static Member chooseMemberNormal() {
+        if (Member.isEmpty()) {
+            System.out.println("No members available!");
+            return null;
+        }
+
+        for (int i = 0; i < Member.size(); i++) {
+            System.out.println((i + 1) + ") " + Member.get(i).getName());
+        }
+        System.out.println("Select member:");
+        int choice = input.nextInt();
+        input.nextLine();
+
+        return Member.get(choice - 1);
+    }
+    
+    //Choose a member - for search results
+    public static Member chooseMember(ArrayList<Member> members) {
+        if (members.isEmpty()) {
+            System.out.println("No members available!");
+            return null;
+        }
+
+        printMembers(members);
+        System.out.println("Select member:");
+        int choice = input.nextInt();
+        input.nextLine();
+
+        return members.get(choice - 1);
+    }
+    
     public static String printItems(ArrayList<Item> items){
         // method to print out the search list items 
         String details="";
@@ -25,6 +90,73 @@ public class ISA_system {
         return details;
     }
     
+    
+    public static void LoadFile(File input){
+        // pretty sure as per file it is like read all objects line by line come
+        //acrross book or dvd with no email attr set mem to null or search from mem as per email and set
+        try{
+            BufferedReader info = new BufferedReader(new FileReader(input));
+            List<String> orphanItems = new ArrayList<>();
+            String line;
+            while((line = info.readLine()) != null){
+                if (line.startsWith("Member|")){
+                    break;
+                }
+                orphanItems.add(line);
+            }
+        
+            while((line = info.readLine()) != null){
+                if (line.startsWith("Member|")){
+                    String [] attr = line.split("\\\\|",line.length());
+                    int num_items = Integer.parseInt(attr[4]);
+                    Member newMem = new Member (attr[1],attr[2],attr[3],num_items);
+                    // add into mem collection
+                }
+                else if (line.startsWith("DVD|")){
+                    String [] attr = line.split("\\\\|",line.length());
+                    String[] langs = attr[4].split("\\\\,",attr[4].length());
+                    // search member function  takes attr[5] returns member 
+                    Member mem=null;
+                    DVD newDVD = new DVD(attr[1],attr[3],mem,attr[2],langs);
+                    item_collection.addItem(newDVD); 
+                }
+                else if (line.startsWith("Book|")){
+                    String [] attr = line.split("\\\\|",line.length());
+                    // i suppose we can add checks to see if proper attributes were obtained
+                    // search member function  takes attr[5] returns member 
+                    Member mem=null;
+                    Book newBook = new Book(attr[1],attr[2],mem,attr[4],attr[3]);
+                    item_collection.addItem(newBook); 
+                 }
+           
+            
+            }
+        // orphan items addition
+            for (String item : orphanItems){
+                if (item.startsWith("Book|")){
+                    String [] attr = item.split("\\\\|",item.length());
+                    Book newBook = new Book(attr[1],attr[2],null,attr[4],attr[3]);
+                    item_collection.addItem(newBook); 
+                }
+                else{
+                    String [] attr = item.split("\\\\|",item.length());
+                    String[] langs = attr[4].split(",",attr[4].length());
+                     // search member function  takes attr[5] returns member 
+                    DVD newDVD = new DVD(attr[1],attr[3],null,attr[2],langs);
+                    item_collection.addItem(newDVD); 
+                }
+            
+            info.close();
+            
+        }
+        } catch (FileNotFoundException ex) {
+            System.getLogger(ISA_system.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } catch (IOException ex) {
+            System.getLogger(ISA_system.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }
+        
+        
     
     public static void updateBook(int opt,Item item){
         // helper method specifically to update Book Items
@@ -48,11 +180,18 @@ public class ISA_system {
             System.out.println("Donator cleared");
             break;
             
-            case 4 : //member list // member index //get member
-                Member mem = null;
-                Bookitem.loanTo(mem);
-                System.out.println("Borrower Updated");    // update borrower
-                break;
+            case 4 : 
+                Member mem = chooseMemberNormal(); //gives out all the members and returns the choice made by user
+                if (mem != null){
+                    Bookitem.loanTo(mem);
+                    System.out.println("Borrower Updated");    // update borrower
+                    break;
+                }
+                else{
+                   System.out.println("Borrower selected does not exist");    // update borrower
+                   break; 
+                }
+                
                 
             case 5: System.out.println("Enter new author name: ");  
             String author = input.nextLine();
@@ -95,12 +234,19 @@ public class ISA_system {
             System.out.println("Donator cleared");  //update donor - clear donor
             break;
             
-            case 4 : //member list // member index //get member
-                Member mem = null;
-                dvdItem.loanTo(mem);
-                System.out.println("Borrower Updated");  //update borrower 
+            case 4 : 
+                Member mem = chooseMemberNormal(); //gives out all the members and returns the choice made by user
+                if (mem != null){
+                    dvdItem.loanTo(mem);
+                    System.out.println("Borrower Updated");  //update borrower 
                                                           //case being if same member deleted old acc created new acc and then add that acc
-                break;
+                    break;
+                }
+                else{
+                   System.out.println("Borrower selected does not exist");    // update borrower
+                   break; 
+                }
+                
                 
             case 5: System.out.println("Enter new director name: "); //update director
             String director = input.nextLine();
@@ -134,12 +280,18 @@ public class ISA_system {
         String author = input.next();
         String lang = input.next();
         String isbn = input.next();
-        //Member show list //choose member 
-        Member mem = null; //donated
-        Item item = new Book(title,author,mem,lang,isbn);
-        mem.addDonation(item);
-        item_collection.addItem(item);
-        System.out.println("Book Item added ");  
+        
+        Member mem = chooseMemberNormal(); // //gives out all the members and returns the choice made by user
+        if (mem != null){
+           Item item = new Book(title,author,mem,lang,isbn);
+            mem.addDonation(item);
+            item_collection.addItem(item);
+            System.out.println("Book Item added ");   
+        }
+        else{
+            System.out.println("Member does not exist on the system,book cannot be donated");
+        }
+        
     }
     
     public static void addDVD(){
@@ -160,11 +312,16 @@ public class ISA_system {
             langs.add(audiolang);
             }
         String[] languages = langs.toArray(new String[0]);
-        //Member show list //choose member 
-        Member mem = null; //donated
-        Item item = new DVD(title,director,mem,lang,languages);
-        item_collection.addItem(item);
-        System.out.println("Book Item added ");  
+        Member mem = chooseMemberNormal(); //gives out all the members and returns the choice made by user
+        if (mem != null){
+            Item item = new DVD(title,director,mem,lang,languages); //new method - use just pass in attr
+            item_collection.addItem(item);
+            System.out.println("DVD Item added ");   
+        }
+        else{
+            System.out.println("Member does not exist on the system,book cannot be donated");
+        }
+        
     }
     
     
@@ -220,15 +377,19 @@ public class ISA_system {
         else if (opt ==3){
             // lend item - first check if item is available 
             if (item.isAvailable()){
-                //member list // check member list is full otheriwse does not exist 
-                // get member whom i wanna lend to 
-                Member mem = null;
+                System.out.println("To Search, enter name of Member : ");
+                String name = input.nextLine();
+                ArrayList<Member> members= item_collection.searchMembers(name); //this is later modified to memcollection
+                Member mem = chooseMember(members);
+                
                 boolean ans = mem.lendItem(item); //this method returns true if successful
                 if (ans){
                     System.out.println("Item successfully lent");  //item lent
                 }
                 else
                     System.out.println("Borrowal limit was reached "); // borrow limit for member was reached
+                
+                
             }
             else{
                 System.out.println("Item is not available");// item was not available
@@ -238,8 +399,7 @@ public class ISA_system {
         else if (opt == 4){
             // return item - checks if item is truly not available 
             if (!item.isAvailable()){
-                // get member who wants to return item im assuming no due date constraint
-                Member mem = null;
+                Member mem= item.getBorrower(); //get member who borrowed
                 mem.returnItem(item);
                 System.out.println("Item returned"); //returns item
             }
@@ -256,7 +416,8 @@ public class ISA_system {
                            Here are the following things you can do: 
                             1) Search for Items
                             2) Add Item
-                            3) Exit 
+                            3) Add Member
+                            4) Exit
                            """);
         
         
@@ -270,7 +431,7 @@ public class ISA_system {
         // main method carrying out all the processes and calling everything
         // first displays menu and then keeps on going till exit is selected
         int choice = displayMenu();
-        while (choice != 3){
+        while (choice != 4){
             //choice 1 -> Search for items -> leads to other options
             if (choice==1){
                 System.out.println("Please enter the title of the Item : ");
@@ -300,6 +461,10 @@ public class ISA_system {
                 if (type.equals("DVD")){ //or addDVD is called
                     addDVD();
                 }
+            }
+            else if (choice ==3){
+                // choice 3 -> add Member -> uses helper method 
+                addMember();
             }
             choice = displayMenu(); //keep on displaying menu and taking choice 
           
