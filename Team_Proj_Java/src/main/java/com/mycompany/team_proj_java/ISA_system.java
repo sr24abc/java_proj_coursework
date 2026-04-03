@@ -28,12 +28,25 @@ public class ISA_system {
     public static void addMember() {
         System.out.println("Enter name:");
         String name = input.nextLine();
+        while ((name == null) || (name.isEmpty())){
+            System.out.println("Invalid name, Enter name again:");
+            name = input.nextLine();
+            
+        }
 
         System.out.println("Enter address:");
         String address = input.nextLine();
+        while ((address == null) || (address.isEmpty())){
+            System.out.println("Invalid address, Enter address again:");
+            address = input.nextLine();
+        }
 
         System.out.println("Enter email:");
         String email = input.nextLine();
+        while ((email == null) || (email.isEmpty())){
+            System.out.println("Invalid email, Enter email again:");
+            email = input.nextLine();
+        }
 
         Member member = new Member(name, address, email, 0);
         Member.add(member);
@@ -62,6 +75,12 @@ public class ISA_system {
         System.out.println("Select member:");
         int choice = input.nextInt();
         input.nextLine();
+        while ((choice<1) || (choice > Member.size())){
+            System.out.println("Invalid choice, choose again:");
+            choice = input.nextInt();
+            input.nextLine();
+        }
+        
 
         return Member.get(choice - 1);
     }
@@ -77,6 +96,11 @@ public class ISA_system {
         System.out.println("Select member:");
         int choice = input.nextInt();
         input.nextLine();
+        while ((choice<1) || (choice > members.size())){
+            System.out.println("Invalid choice, choose again:");
+            choice = input.nextInt();
+            input.nextLine();
+        }
 
         return members.get(choice - 1);
     }
@@ -89,74 +113,7 @@ public class ISA_system {
         }
         return details;
     }
-    
-    
-    public static void LoadFile(File input){
-        // pretty sure as per file it is like read all objects line by line come
-        //acrross book or dvd with no email attr set mem to null or search from mem as per email and set
-        try{
-            BufferedReader info = new BufferedReader(new FileReader(input));
-            List<String> orphanItems = new ArrayList<>();
-            String line;
-            while((line = info.readLine()) != null){
-                if (line.startsWith("Member|")){
-                    break;
-                }
-                orphanItems.add(line);
-            }
-        
-            while((line = info.readLine()) != null){
-                if (line.startsWith("Member|")){
-                    String [] attr = line.split("\\\\|",line.length());
-                    int num_items = Integer.parseInt(attr[4]);
-                    Member newMem = new Member (attr[1],attr[2],attr[3],num_items);
-                    // add into mem collection
-                }
-                else if (line.startsWith("DVD|")){
-                    String [] attr = line.split("\\\\|",line.length());
-                    String[] langs = attr[4].split("\\\\,",attr[4].length());
-                    // search member function  takes attr[5] returns member 
-                    Member mem=null;
-                    DVD newDVD = new DVD(attr[1],attr[3],mem,attr[2],langs);
-                    item_collection.addItem(newDVD); 
-                }
-                else if (line.startsWith("Book|")){
-                    String [] attr = line.split("\\\\|",line.length());
-                    // i suppose we can add checks to see if proper attributes were obtained
-                    // search member function  takes attr[5] returns member 
-                    Member mem=null;
-                    Book newBook = new Book(attr[1],attr[2],mem,attr[4],attr[3]);
-                    item_collection.addItem(newBook); 
-                 }
-           
-            
-            }
-        // orphan items addition
-            for (String item : orphanItems){
-                if (item.startsWith("Book|")){
-                    String [] attr = item.split("\\\\|",item.length());
-                    Book newBook = new Book(attr[1],attr[2],null,attr[4],attr[3]);
-                    item_collection.addItem(newBook); 
-                }
-                else{
-                    String [] attr = item.split("\\\\|",item.length());
-                    String[] langs = attr[4].split(",",attr[4].length());
-                     // search member function  takes attr[5] returns member 
-                    DVD newDVD = new DVD(attr[1],attr[3],null,attr[2],langs);
-                    item_collection.addItem(newDVD); 
-                }
-            
-            info.close();
-            
-        }
-        } catch (FileNotFoundException ex) {
-            System.getLogger(ISA_system.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        } catch (IOException ex) {
-            System.getLogger(ISA_system.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
-    }
-        
-        
+     
     
     public static void updateBook(int opt,Item item){
         // helper method specifically to update Book Items
@@ -166,12 +123,20 @@ public class ISA_system {
         switch(opt){ // uses a switch statement
             case 1 : System.out.println("Enter new title: ");  //if title is to be updated
             String newTitle = input.nextLine();
+            while ((newTitle==null) || (newTitle.isEmpty())){
+            System.out.println("Invalid title, enter again:");
+            newTitle=input.nextLine();
+        }
             Bookitem.setTitle(newTitle);
             System.out.println("Title changed");
             break;
             
             case 2: System.out.println("Enter new language: "); // update language
             String newLang = input.nextLine();
+            while ((newLang==null) || (newLang.isEmpty())){
+            System.out.println("Invalid language, enter again:");
+            newLang=input.nextLine();
+        }
             Bookitem.setLanguage(newLang);
             System.out.println("Language changed");
             break;
@@ -195,13 +160,20 @@ public class ISA_system {
                 
             case 5: System.out.println("Enter new author name: ");  
             String author = input.nextLine();
-            
+            while ((author==null) || (author.isEmpty())){
+            System.out.println("Invalid author name, enter again:");
+            author=input.nextLine();
+            }
             Bookitem.setAuthor(author); 
             System.out.println("Author Updated"); //update author name
             break;
             
             case 6: System.out.println("Enter new ISBN: ");
             String isbn = input.nextLine();
+            while ((isbn==null) || (isbn.isEmpty())){
+            System.out.println("Invalid ISBN, enter again:");
+            isbn=input.nextLine();
+            }
             
             Bookitem.setIsbn(isbn);
             System.out.println("ISBN Updated"); // update ISBN
@@ -220,12 +192,20 @@ public class ISA_system {
         switch(opt){ // switch statement used
             case 1 : System.out.println("Enter new title: ");  //update title
             String newTitle = input.nextLine();
+            while ((newTitle==null) || (newTitle.isEmpty())){
+            System.out.println("Invalid title, enter again:");
+            newTitle=input.nextLine();
+            }
             dvdItem.setTitle(newTitle);
             System.out.println("Title changed");
             break;
             
             case 2: System.out.println("Enter new language: "); //update language
             String newLang = input.nextLine();
+            while ((newLang==null) || (newLang.isEmpty())){
+            System.out.println("Invalid language, enter again:");
+            newLang =input.nextLine();
+            }
             dvdItem.setLanguage(newLang);
             System.out.println("Language changed");
             break;
@@ -250,6 +230,10 @@ public class ISA_system {
                 
             case 5: System.out.println("Enter new director name: "); //update director
             String director = input.nextLine();
+            while ((director==null) || (director.isEmpty())){
+            System.out.println("Invalid director name, enter again:");
+            director=input.nextLine();
+            }
             dvdItem.setDirector(director);
             System.out.println("Director Updated");
             break;
@@ -280,6 +264,13 @@ public class ISA_system {
         String author = input.next();
         String lang = input.next();
         String isbn = input.next();
+        while ((title.isEmpty())|| (author.isEmpty())|| (lang.isEmpty())||(isbn.isEmpty())){
+            System.out.println("Invalid entries.Enter title,author,language,isbn again:");
+            title = input.next();
+            author = input.next();
+            lang = input.next();
+            isbn = input.next();
+        }
         
         Member mem = chooseMemberNormal(); // //gives out all the members and returns the choice made by user
         if (mem != null){
@@ -300,6 +291,12 @@ public class ISA_system {
         String title = input.next();
         String director = input.next();
         String lang = input.next();
+        while ((title.isEmpty())|| (director.isEmpty())|| (lang.isEmpty())){
+            System.out.println("Invalid entries.Enter title,author,language,isbn again:");
+            title = input.next();
+            director = input.next();
+            lang = input.next();
+        }
         System.out.println("Enter new languages and -1 if at the end : ");
         String audiolang  = input.nextLine();
         ArrayList<String> langs = new ArrayList<String>();
@@ -366,6 +363,11 @@ public class ISA_system {
             System.out.println(options);
             int operation = input.nextInt();
             input.nextLine();
+            while ((operation<1) || (operation>6)){
+                System.out.println("Invalid operation choice, enter again: ");
+                operation = input.nextInt();
+                input.nextLine();
+            }
             // then calls helper methods to do the task
             if (item instanceof Book){
                 updateBook(operation,item);
@@ -424,6 +426,11 @@ public class ISA_system {
         System.out.println("Please enter the operation: ");
         int choice = input.nextInt();
         input.nextLine();
+        while ((choice<1)|| (choice>4)){
+            System.out.println("Invalid opt, enter again: ");
+            choice = input.nextInt();
+            input.nextLine();
+        }
         return choice;
     }
     
@@ -447,6 +454,11 @@ public class ISA_system {
                 printOptions();
                 int option = input.nextInt(); //take user input 
                 input.nextLine();
+                while ((option<1) || (option>4)){
+                    System.out.println("Invalid opt, enter again: ");
+                    option = input.nextInt(); //take user input 
+                    input.nextLine();
+                }
                 doActions(option,item); // call doActions which takes care of the rest : update,remove,lend,return
             }
             
@@ -454,6 +466,10 @@ public class ISA_system {
                 // choice 2 -> add Item -> two types : book or dvd
                 System.out.println("Enter the type of item you want to add - Book or DVD: ");
                 String type = input.nextLine();
+                while ((type == null) || (type.isEmpty())){
+                    System.out.println("Invalid type, Enter the type of item again: ");
+                    type = input.nextLine();
+                }
                 //based on user response
                 if (type.equals("Book")){  //either addBook is called
                     addBook();
