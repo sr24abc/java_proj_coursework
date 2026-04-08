@@ -301,16 +301,23 @@ public class ISA_system {
     
     public static void addBook(){
         // method specifically for adding Book item - will be shifted to collection class
-        System.out.println("Enter title,author,language,isbn");
+        System.out.println("Enter title");
         String title = input.next();
+        System.out.println("Enter author");
         String author = input.next();
+        System.out.println("Enter language");
         String lang = input.next();
+        System.out.println("Enter ISBN");
         String isbn = input.next();
         while ((title.isEmpty())|| (author.isEmpty())|| (lang.isEmpty())||(isbn.isEmpty())){
-            System.out.println("Invalid entries.Enter title,author,language,isbn again:");
+            System.out.println("Invalid entries, enter again: ");
+            System.out.println("Enter title");
             title = input.next();
+            System.out.println("Enter author");
             author = input.next();
+            System.out.println("Enter language");
             lang = input.next();
+            System.out.println("Enter ISBN");
             isbn = input.next();
         }
         // not sure if search or normal is applicable 
@@ -329,14 +336,19 @@ public class ISA_system {
     
     public static void addDVD(){
         //method specifically for adding DVD item - will be shifted to collection class
-        System.out.println("Enter title,director,language");
+        System.out.println("Enter title");
         String title = input.next();
+        System.out.println("Enter director");
         String director = input.next();
+        System.out.println("Enter language");
         String lang = input.next();
         while ((title.isEmpty())|| (director.isEmpty())|| (lang.isEmpty())){
-            System.out.println("Invalid entries.Enter title,author,language,isbn again:");
+            System.out.println("Invalid entries, enter again: ");
+            System.out.println("Enter title");
             title = input.next();
+            System.out.println("Enter director");
             director = input.next();
+            System.out.println("Enter language");
             lang = input.next();
         }
         System.out.println("Enter new languages and -1 if at the end : ");
@@ -547,6 +559,7 @@ public class ISA_system {
             choice = displayMenu(); //keep on displaying menu and taking choice 
           
     }
+        System.out.println("Thank you for using ISA system, See you soon!!");
     
     
     
