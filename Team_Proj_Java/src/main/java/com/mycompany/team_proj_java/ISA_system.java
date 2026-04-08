@@ -21,7 +21,8 @@ public class ISA_system {
     static Scanner input = new Scanner(System.in); // global input scanner declared
     
     
-    public static ArrayList<Member> Member = new ArrayList<>();
+    public static ArrayList<Member> members = new ArrayList<>();
+
     
     //Member methods
     //Add a new member
@@ -49,7 +50,7 @@ public class ISA_system {
         }
 
         Member member = new Member(name, address, email, 0);
-        Member.add(member);
+        members.add(member);
 
         System.out.println("Member added successfully!");
     }
@@ -64,31 +65,31 @@ public class ISA_system {
     
     //Choose a member - from all members
     public static Member chooseMemberNormal() {
-        if (Member.isEmpty()) {
+        if (members.isEmpty()) {
             System.out.println("No members available!");
             return null;
         }
 
-        for (int i = 0; i < Member.size(); i++) {
-            System.out.println((i + 1) + ") " + Member.get(i).getName());
+        for (int i = 0; i < members.size(); i++) {
+            System.out.println((i + 1) + ") " + members.get(i).getName());
         }
         System.out.println("Select member:");
         int choice = input.nextInt();
         input.nextLine();
-        while ((choice<1) || (choice > Member.size())){
+        while ((choice<1) || (choice > members.size())){
             System.out.println("Invalid choice, choose again:");
             choice = input.nextInt();
             input.nextLine();
         }
         
 
-        return Member.get(choice - 1);
+        return members.get(choice - 1);
     }
     
     //searches members by name 
     public static ArrayList<Member> searchMembers(String name) {
         ArrayList<Member> results = new ArrayList<>();
-        for (Member m : Member) {
+        for (Member m : members) {
             if (m.getName().toLowerCase().contains(name.toLowerCase())) {
                 results.add(m);
             }
@@ -133,7 +134,7 @@ public class ISA_system {
                 item.clearDonator();
             }
         }
-        Member.remove(removed);
+        members.remove(removed);
         System.out.println("Member removed successfully.");
     }
     
