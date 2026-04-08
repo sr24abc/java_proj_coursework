@@ -85,6 +85,17 @@ public class ISA_system {
         return Member.get(choice - 1);
     }
     
+    //searches members by name 
+    public static ArrayList<Member> searchMembers(String name) {
+        ArrayList<Member> results = new ArrayList<>();
+        for (Member m : Member) {
+            if (m.getName().toLowerCase().contains(name.toLowerCase())) {
+                results.add(m);
+            }
+        }
+        return results;
+    }
+    
     //Choose a member - for search results
     public static Member chooseMember(ArrayList<Member> members) {
         if (members.isEmpty()) {
@@ -104,6 +115,29 @@ public class ISA_system {
 
         return members.get(choice - 1);
     }
+    
+    //removes a member from the system
+    public static void removeMember() {
+        System.out.println("Enter name of member to remove:");
+        String name = input.nextLine();
+        ArrayList<Member> results = searchMembers(name);
+
+        if (results.isEmpty()) {
+            System.out.println("No members found.");
+            return;
+        }
+        Member removed = chooseMember(results);
+        //clears donation info from items
+        for (Item item : item_collection.getItems()) {
+            if (item.getDonator() == removed) {
+                item.clearDonator();
+            }
+        }
+        Member.remove(removed);
+        System.out.println("Member removed successfully.");
+    }
+    
+        
     
     public static String printItems(ArrayList<Item> items){
         // method to print out the search list items 
@@ -146,7 +180,11 @@ public class ISA_system {
             break;
             
             case 4 : 
-                Member mem = chooseMemberNormal(); //gives out all the members and returns the choice made by user
+                System.out.println("Enter the name of the member you want to lend to now: ");
+                String search = input.nextLine();
+                ArrayList <Member> members = searchMembers(search);
+                
+                Member mem = chooseMember(members); //gives out all the  search result members and returns the choice made by user
                 if (mem != null){
                     Bookitem.loanTo(mem);
                     System.out.println("Borrower Updated");    // update borrower
@@ -215,7 +253,10 @@ public class ISA_system {
             break;
             
             case 4 : 
-                Member mem = chooseMemberNormal(); //gives out all the members and returns the choice made by user
+                System.out.println("Enter the name of the member you want to lend to now: ");
+                String search = input.nextLine();
+                ArrayList <Member> members = searchMembers(search);
+                Member mem = chooseMember(members); //gives out all the search result members and returns the choice made by user
                 if (mem != null){
                     dvdItem.loanTo(mem);
                     System.out.println("Borrower Updated");  //update borrower 
@@ -271,7 +312,7 @@ public class ISA_system {
             lang = input.next();
             isbn = input.next();
         }
-        
+        // not sure if search or normal is applicable 
         Member mem = chooseMemberNormal(); // //gives out all the members and returns the choice made by user
         if (mem != null){
            Item item = new Book(title,author,mem,lang,isbn);
@@ -381,7 +422,7 @@ public class ISA_system {
             if (item.isAvailable()){
                 System.out.println("To Search, enter name of Member : ");
                 String name = input.nextLine();
-                ArrayList<Member> members= item_collection.searchMembers(name); //this is later modified to memcollection
+                ArrayList<Member> members= searchMembers(name); //this is later modified to memcollection
                 Member mem = chooseMember(members);
                 
                 boolean ans = mem.lendItem(item); //this method returns true if successful
@@ -416,17 +457,19 @@ public class ISA_system {
         System.out.println("Welcome to ISA_System!");
         System.out.println("""
                            Here are the following things you can do: 
-                            1) Search for Items
-                            2) Add Item
-                            3) Add Member
-                            4) Exit
+                             1) Search for Items
+                             2) Search for Members
+                             3) Add Item
+                             4) Add Member
+                             5) Remove Member
+                             6) Exit 
                            """);
         
         
         System.out.println("Please enter the operation: ");
         int choice = input.nextInt();
         input.nextLine();
-        while ((choice<1)|| (choice>4)){
+        while ((choice<1)|| (choice>6)){
             System.out.println("Invalid opt, enter again: ");
             choice = input.nextInt();
             input.nextLine();
@@ -438,7 +481,7 @@ public class ISA_system {
         // main method carrying out all the processes and calling everything
         // first displays menu and then keeps on going till exit is selected
         int choice = displayMenu();
-        while (choice != 4){
+        while (choice != 6){
             //choice 1 -> Search for items -> leads to other options
             if (choice==1){
                 System.out.println("Please enter the title of the Item : ");
@@ -461,9 +504,24 @@ public class ISA_system {
                 }
                 doActions(option,item); // call doActions which takes care of the rest : update,remove,lend,return
             }
-            
             else if (choice == 2){
-                // choice 2 -> add Item -> two types : book or dvd
+                //choice 2 -> Search Member
+                System.out.println("Enter name to search:");
+                String name = input.nextLine();
+
+                ArrayList<Member> results = searchMembers(name);
+
+                if (results.isEmpty()) {
+                    System.out.println("No members found.");
+                } 
+                else {
+                    printMembers(results);
+                }
+            }
+            
+            
+            else if (choice == 3){
+                // choice 3 -> add Item -> two types : book or dvd
                 System.out.println("Enter the type of item you want to add - Book or DVD: ");
                 String type = input.nextLine();
                 while ((type == null) || (type.isEmpty())){
@@ -478,9 +536,12 @@ public class ISA_system {
                     addDVD();
                 }
             }
-            else if (choice ==3){
-                // choice 3 -> add Member -> uses helper method 
+            else if (choice == 4) {
                 addMember();
+            }
+            
+            else if (choice == 5) {
+                removeMember();
             }
             choice = displayMenu(); //keep on displaying menu and taking choice 
           
