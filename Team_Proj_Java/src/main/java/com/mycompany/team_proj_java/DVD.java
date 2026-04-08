@@ -10,7 +10,7 @@ package com.mycompany.team_proj_java;
  */
 import java.util.Arrays;
 
-public class DVD extends Item {
+public class DVD extends Item  {
     // DVD class - subclass of Item
     
     private String director;
