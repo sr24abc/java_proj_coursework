@@ -15,7 +15,7 @@ import java.util.List;
  * Represents a member of the ISA.
  * A member can donate items and borrow items.
  */
-public class Member {
+public class Member  {
 
     //Basic member details
     private String name;
