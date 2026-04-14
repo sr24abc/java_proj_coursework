@@ -16,15 +16,34 @@ public class Collection {
         items = new ArrayList<>();
     }
 
-    // add item to collection
-    public void addItem(Item item) {
-        if (item == null) {
-            System.out.println("Item cannot be null");
+    // add book to collection
+    public void addBook(String title, String author, Member donator, String language, String isbn) {
+        if (title == null || title.isEmpty() ||
+            author == null || author.isEmpty() ||
+            language == null || language.isEmpty() ||
+            isbn == null || isbn.isEmpty()) {
+            System.out.println("Invalid book data");
             return;
         }
 
-        items.add(item);
+        Book book = new Book(title, author, donator, language, isbn);
+        items.add(book);
     }
+
+    // add DVD to collection
+    public void addDVD(String title, String director, Member donator, String language, String[] audioLanguages) {
+        if (title == null || title.isEmpty() ||
+            director == null || director.isEmpty() ||
+            language == null || language.isEmpty() ||
+            audioLanguages == null) {
+            System.out.println("Invalid DVD data");
+            return;
+        }
+
+        DVD dvd = new DVD(title, director, donator, language, audioLanguages);
+        items.add(dvd);
+    }
+
 
     // remove item from collection
     public void removeItem(Item item) {
