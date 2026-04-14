@@ -323,9 +323,9 @@ public class ISA_system {
         // not sure if search or normal is applicable 
         Member mem = chooseMemberNormal(); // //gives out all the members and returns the choice made by user
         if (mem != null){
-           Item item = new Book(title,author,mem,lang,isbn);
-            mem.addDonation(item);
-            item_collection.addItem(item);
+            Book book = new Book(title,author,mem,lang,isbn);
+            item_collection.addBook(title,author,mem,lang,isbn);
+            mem.addDonation(book);
             System.out.println("Book Item added ");   
         }
         else{
@@ -365,8 +365,9 @@ public class ISA_system {
         String[] languages = langs.toArray(new String[0]);
         Member mem = chooseMemberNormal(); //gives out all the members and returns the choice made by user
         if (mem != null){
-            Item item = new DVD(title,director,mem,lang,languages); //new method - use just pass in attr
-            item_collection.addItem(item);
+            DVD dvd = new DVD(title,director,mem,lang,languages); //new method - use just pass in attr
+            item_collection.addDVD(title,director,mem,lang,languages);
+            mem.addDonation(dvd);
             System.out.println("DVD Item added ");   
         }
         else{
