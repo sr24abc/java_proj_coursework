@@ -484,6 +484,7 @@ public class ISA_system {
                          2) Update Item
                          3) Lend Item
                          4) Return Item
+                         5) Go back to previous page
                          """;
         System.out.println(details);
     }
@@ -563,6 +564,9 @@ public class ISA_system {
             else
                 System.out.println("Item was not being borrowed"); //item was not borrowed to begin with
         }
+        else if (opt==5){
+            System.out.println("Going Back!");
+        }
     
     }
     
@@ -604,21 +608,31 @@ public class ISA_system {
                 String searchterm = input.nextLine();
                 ArrayList<Item> items = item_collection.searchItems(searchterm);// result of search
                 System.out.println(printItems(items));//print it
-                System.out.println("Please enter the index of the Item : ");//choose one from search
+                System.out.println("Enter : 1) End Search 2) Edit item collection ");
+                int searchopt = input.nextInt();
+                input.nextLine();
+                if (searchopt==1){
+                    continue;
+                }
+                else{
+                System.out.println("""
+                                   Please enter the index of the Item 
+                                   scroll up if needed : """);//choose one from search
                 int opt = input.nextInt();
                 input.nextLine();
-                Item item = items.get(opt-1);//get the item
-                item.toString();
+                Item item = item_collection.getItemInd(opt-1);//get the item
+                System.out.println(item.toString());
                 System.out.println("Please choose one of the following operations: ");//print further options
                 printOptions();
                 int option = input.nextInt(); //take user input 
                 input.nextLine();
-                while ((option<1) || (option>4)){
+                while ((option<1) || (option>5)){
                     System.out.println("Invalid opt, enter again: ");
                     option = input.nextInt(); //take user input 
                     input.nextLine();
                 }
                 doActions(option,item); // call doActions which takes care of the rest : update,remove,lend,return
+            }
             }
             else if (choice == 2){
                 //choice 2 -> Search Member
