@@ -101,4 +101,13 @@ public class Collection {
     public ArrayList<Item> getItems() {
         return items;
     }
+    
+    public Item getItemInd(int index){
+        if (index>items.size() || index<0) {
+            return null;
+        }
+
+        return items.get(index);
+    
+    }
 }
