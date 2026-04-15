@@ -21,7 +21,7 @@ public class ISA_system {
     static Scanner input = new Scanner(System.in); // global input scanner declared
     
     
-    public static MemberCollection members = new MemberCollection();
+    public static MemberCollection members = new MemberCollection(); //member collection declared
     
     //file loading method
     // to get the data into the system
@@ -81,7 +81,7 @@ public class ISA_system {
                     if (addedItem != null && !borrowerEmail.isEmpty()) {
                         Member borrower = members.findMemberByEmail(borrowerEmail);
                         if (borrower != null) {
-                            borrower.lendItem(addedItem);
+                            borrower.addDonation(addedItem);
                         }
                     }
 
@@ -110,7 +110,7 @@ public class ISA_system {
                     if (addedItem != null && !borrowerEmail.isEmpty()) {
                         Member borrower = members.findMemberByEmail(borrowerEmail);
                         if (borrower != null) {
-                            borrower.lendItem(addedItem);
+                            borrower.addDonation(addedItem);
                         }
                     }
 
@@ -423,8 +423,8 @@ public class ISA_system {
         // not sure if search or normal is applicable 
         Member mem = chooseMemberNormal(); // //gives out all the members and returns the choice made by user
         if (mem != null){
-            Book book = new Book(title,author,mem,lang,isbn);
             item_collection.addBook(title,author,mem,lang,isbn);
+            Item book = item_collection.getItem(title); //get added item to add into member's record
             mem.addDonation(book);
             System.out.println("Book Item added ");   
         }
@@ -465,8 +465,8 @@ public class ISA_system {
         String[] languages = langs.toArray(new String[0]);
         Member mem = chooseMemberNormal(); //gives out all the members and returns the choice made by user
         if (mem != null){
-            DVD dvd = new DVD(title,director,mem,lang,languages); //new method - use just pass in attr
             item_collection.addDVD(title,director,mem,lang,languages);
+            Item dvd = item_collection.getItem(title); //get added item to add into member's record
             mem.addDonation(dvd);
             System.out.println("DVD Item added ");   
         }
