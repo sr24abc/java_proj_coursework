@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import java.io.*;
-import java.util.List;
+
 
 /**
  *
@@ -21,7 +21,116 @@ public class ISA_system {
     static Scanner input = new Scanner(System.in); // global input scanner declared
     
     
-    public static ArrayList<Member> members = new ArrayList<>();
+    public static MemberCollection members = new MemberCollection();
+    
+    //file loading method
+    // to get the data into the system
+    public static void loadFromFile() {
+    String fileName = "input.dat";
+
+    try {
+        Scanner fileScanner = new Scanner(new File(fileName));
+
+        while (fileScanner.hasNextLine()) {
+            String line = fileScanner.nextLine().trim();
+
+            if (line.isEmpty()) {
+                continue;
+            }
+
+            String[] parts = line.split("\\|");
+
+            int i = 0;
+            Member currentDonor = null;
+
+            while (i < parts.length) {
+                String type = parts[i].trim();
+
+                if (type.equals("Member")) {
+                    if (i + 4 >= parts.length) {
+                        break;
+                    }
+
+                    String name = parts[i + 1].trim();
+                    String address = parts[i + 2].trim();
+                    String email = parts[i + 3].trim();
+                    int donatedQty = Integer.parseInt(parts[i + 4].trim());
+
+                    Member member = new Member(name, address, email, donatedQty);
+                    members.addMember(member);
+                    currentDonor = member;
+
+                    i += 5;
+                }
+
+                else if (type.equals("Book")) {
+                    if (i + 5 >= parts.length) {
+                        break;
+                    }
+
+                    String title = parts[i + 1].trim();
+                    String author = parts[i + 2].trim();
+                    String isbn = parts[i + 3].trim();
+                    String language = parts[i + 4].trim();
+                    String borrowerEmail = parts[i + 5].trim();
+
+                    item_collection.addBook(title, author, currentDonor, language, isbn);
+
+                    Item addedItem = item_collection.getItem(title);
+
+                    if (addedItem != null && !borrowerEmail.isEmpty()) {
+                        Member borrower = members.findMemberByEmail(borrowerEmail);
+                        if (borrower != null) {
+                            borrower.lendItem(addedItem);
+                        }
+                    }
+
+                    i += 6;
+                }
+
+                else if (type.equals("DVD")) {
+                    if (i + 5 >= parts.length) {
+                        break;
+                    }
+
+                    String title = parts[i + 1].trim();
+                    String language = parts[i + 2].trim();
+                    String director = parts[i + 3].trim();
+                    String[] audioLanguages = parts[i + 4].trim().split(",");
+                    String borrowerEmail = parts[i + 5].trim();
+
+                    for (int j = 0; j < audioLanguages.length; j++) {
+                        audioLanguages[j] = audioLanguages[j].trim();
+                    }
+
+                    item_collection.addDVD(title, director, currentDonor, language, audioLanguages);
+
+                    Item addedItem = item_collection.getItem(title);
+
+                    if (addedItem != null && !borrowerEmail.isEmpty()) {
+                        Member borrower = members.findMemberByEmail(borrowerEmail);
+                        if (borrower != null) {
+                            borrower.lendItem(addedItem);
+                        }
+                    }
+
+                    i += 6;
+                }
+
+                else {
+                    i++;
+                }
+            }
+        }
+
+        fileScanner.close();
+        System.out.println("File loaded successfully.");
+
+    } catch (Exception e) {
+        System.out.println("Error loading file: " + e.getMessage());
+    }
+}
+
 
     
     //Member methods
@@ -50,7 +159,7 @@ public class ISA_system {
         }
 
         Member member = new Member(name, address, email, 0);
-        members.add(member);
+        members.addMember(member);
 
         System.out.println("Member added successfully!");
     }
@@ -86,16 +195,7 @@ public class ISA_system {
         return members.get(choice - 1);
     }
     
-    //searches members by name 
-    public static ArrayList<Member> searchMembers(String name) {
-        ArrayList<Member> results = new ArrayList<>();
-        for (Member m : members) {
-            if (m.getName().toLowerCase().contains(name.toLowerCase())) {
-                results.add(m);
-            }
-        }
-        return results;
-    }
+    
     
     //Choose a member - for search results
     public static Member chooseMember(ArrayList<Member> members) {
@@ -121,7 +221,7 @@ public class ISA_system {
     public static void removeMember() {
         System.out.println("Enter name of member to remove:");
         String name = input.nextLine();
-        ArrayList<Member> results = searchMembers(name);
+        ArrayList<Member> results = members.searchMembers(name);
 
         if (results.isEmpty()) {
             System.out.println("No members found.");
@@ -134,7 +234,7 @@ public class ISA_system {
                 item.clearDonator();
             }
         }
-        members.remove(removed);
+        members.removeMember(removed);
         System.out.println("Member removed successfully.");
     }
     
@@ -183,9 +283,9 @@ public class ISA_system {
             case 4 : 
                 System.out.println("Enter the name of the member you want to lend to now: ");
                 String search = input.nextLine();
-                ArrayList <Member> members = searchMembers(search);
+                ArrayList <Member> searchResults = members.searchMembers(search);
                 
-                Member mem = chooseMember(members); //gives out all the  search result members and returns the choice made by user
+                Member mem = chooseMember(searchResults); //gives out all the  search result members and returns the choice made by user
                 if (mem != null){
                     Bookitem.loanTo(mem);
                     System.out.println("Borrower Updated");    // update borrower
@@ -256,8 +356,8 @@ public class ISA_system {
             case 4 : 
                 System.out.println("Enter the name of the member you want to lend to now: ");
                 String search = input.nextLine();
-                ArrayList <Member> members = searchMembers(search);
-                Member mem = chooseMember(members); //gives out all the search result members and returns the choice made by user
+                ArrayList <Member> searchResults = members.searchMembers(search);
+                Member mem = chooseMember(searchResults); //gives out all the search result members and returns the choice made by user
                 if (mem != null){
                     dvdItem.loanTo(mem);
                     System.out.println("Borrower Updated");  //update borrower 
@@ -436,8 +536,8 @@ public class ISA_system {
             if (item.isAvailable()){
                 System.out.println("To Search, enter name of Member : ");
                 String name = input.nextLine();
-                ArrayList<Member> members= searchMembers(name); //this is later modified to memcollection
-                Member mem = chooseMember(members);
+                ArrayList<Member> searchResults = members.searchMembers(name); //this is later modified to memcollection
+                Member mem = chooseMember(searchResults);
                 
                 boolean ans = mem.lendItem(item); //this method returns true if successful
                 if (ans){
@@ -493,7 +593,9 @@ public class ISA_system {
     
     public static void main(String[] args){
         // main method carrying out all the processes and calling everything
+        // calls loadFromFile to ensure data is in the system when program begins
         // first displays menu and then keeps on going till exit is selected
+        loadFromFile();
         int choice = displayMenu();
         while (choice != 6){
             //choice 1 -> Search for items -> leads to other options
@@ -523,7 +625,7 @@ public class ISA_system {
                 System.out.println("Enter name to search:");
                 String name = input.nextLine();
 
-                ArrayList<Member> results = searchMembers(name);
+                ArrayList<Member> results = members.searchMembers(name);
 
                 if (results.isEmpty()) {
                     System.out.println("No members found.");
