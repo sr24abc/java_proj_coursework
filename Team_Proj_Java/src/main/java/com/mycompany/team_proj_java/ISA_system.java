@@ -566,13 +566,14 @@ public class ISA_system {
         }
         else if (opt==5){
             System.out.println("Going Back!");
+            
         }
     
     }
     
     public static int displayMenu(){
         //method to display main menu and take input and return it to the while loop
-        System.out.println("Welcome to ISA_System!");
+        
         System.out.println("""
                            Here are the following things you can do: 
                              1) Search for Items
@@ -600,10 +601,12 @@ public class ISA_system {
         // calls loadFromFile to ensure data is in the system when program begins
         // first displays menu and then keeps on going till exit is selected
         loadFromFile();
+        System.out.println("Welcome to ISA_System!");
         int choice = displayMenu();
         while (choice != 6){
             //choice 1 -> Search for items -> leads to other options
             if (choice==1){
+                
                 System.out.println("Please enter the title of the Item : ");
                 String searchterm = input.nextLine();
                 ArrayList<Item> items = item_collection.searchItems(searchterm);// result of search
@@ -612,6 +615,7 @@ public class ISA_system {
                 int searchopt = input.nextInt();
                 input.nextLine();
                 if (searchopt==1){
+                    choice = 0;
                     continue;
                 }
                 else{
@@ -633,6 +637,7 @@ public class ISA_system {
                 }
                 doActions(option,item); // call doActions which takes care of the rest : update,remove,lend,return
             }
+               
             }
             else if (choice == 2){
                 //choice 2 -> Search Member
